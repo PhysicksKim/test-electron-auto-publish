@@ -20,6 +20,40 @@ class AppUpdater {
     log.transports.file.level = 'info';
     autoUpdater.logger = log;
     autoUpdater.checkForUpdatesAndNotify();
+
+    autoUpdater.on('checking-for-update', () => {
+      log.info('Checking for update...');
+    });
+
+    autoUpdater.on('update-available', (info) => {
+      log.info('Update available.');
+    });
+
+    autoUpdater.on('update-not-available', (info) => {
+      log.info('Update not available.');
+    });
+
+    autoUpdater.on('error', (err) => {
+      log.error('Error in auto-updater. ' + err);
+    });
+
+    autoUpdater.on('download-progress', (progressObj) => {
+      let logMessage = 'Download speed: ' + progressObj.bytesPerSecond;
+      logMessage = logMessage + ' - Downloaded ' + progressObj.percent + '%';
+      logMessage =
+        logMessage +
+        ' (' +
+        progressObj.transferred +
+        '/' +
+        progressObj.total +
+        ')';
+      log.info(logMessage);
+    });
+
+    autoUpdater.on('update-downloaded', (info) => {
+      log.info('Update downloaded');
+      autoUpdater.quitAndInstall();
+    });
   }
 }
 
