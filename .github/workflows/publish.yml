@@ -7,11 +7,7 @@ on:
 
 jobs:
   publish:
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        os: [macos-latest]
+    runs-on: windows-latest
 
     steps:
       - name: Checkout git repo
@@ -33,4 +29,4 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          npm exec electron-builder -- --publish always --win --mac --linux
+          npm exec electron-builder -- --publish always --win
