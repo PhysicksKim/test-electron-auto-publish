@@ -1,7 +1,6 @@
 {
   "name": "test-electron-auto-publish",
-  "version": "0.0.1",
-  "description": "Electron React Boilerplate. Test for auto publish and delta update",
+  "description": "NOTE. All publish settings are included in /release/app/package.json. So, if you want to set relases settings, you should edit /release/app/package.json",
   "keywords": [
     "electron",
     "boilerplate",
