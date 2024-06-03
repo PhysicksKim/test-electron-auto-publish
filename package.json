@@ -232,7 +232,7 @@
     ],
     "publish": {
       "provider": "github",
-      "owner": "test-electron-auto-publish",
+      "owner": "PhysicksKim",
       "repo": "test-electron-auto-publish"
     }
   },
