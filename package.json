@@ -18,7 +18,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/PhysicksKim/test-electron-auto-publish.git"
+    "url": "https://github.com/PhysicksKim/test-electron-auto-publish.git"
   },
   "license": "MIT",
   "author": {
@@ -217,7 +217,8 @@
     },
     "nsis": {
       "oneClick": false,
-      "allowToChangeInstallationDirectory": true
+      "allowToChangeInstallationDirectory": true,
+      "differentialPackage": true
     },
     "linux": {
       "target": [

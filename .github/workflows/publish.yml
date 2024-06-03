@@ -29,4 +29,4 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          npm exec electron-builder -- --publish always --win
+          npm exec electron-builder -- --publish always --win --config.nsis.differentialPackage=true
