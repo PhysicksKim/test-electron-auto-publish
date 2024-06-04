@@ -43,7 +43,7 @@ class AppUpdater {
 
     autoUpdater.on('update-downloaded', (info) => {
       log.info('Update downloaded');
-      autoUpdater.quitAndInstall();
+      autoUpdater.quitAndInstall(true); // isSilent = true :: 업데이트 중에 사용자에게 알림을 표시하지 않음
     });
   }
 }
