@@ -212,13 +212,8 @@
     },
     "win": {
       "target": [
-        "nsis"
+        "squirrel"
       ]
-    },
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true,
-      "differentialPackage": true
     },
     "linux": {
       "target": [
