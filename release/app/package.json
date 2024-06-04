@@ -1,6 +1,6 @@
 {
   "name": "test-electron-auto-publish",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "This is test for auto publish of electron boilerplate",
   "license": "MIT",
   "author": {
