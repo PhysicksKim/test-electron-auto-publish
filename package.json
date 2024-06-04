@@ -131,7 +131,6 @@
     "detect-port": "^1.5.1",
     "electron": "^26.2.1",
     "electron-builder": "^24.6.4",
-    "electron-builder-squirrel-windows": "^25.0.0-alpha.9",
     "electron-devtools-installer": "^3.2.0",
     "electronmon": "^2.0.2",
     "eslint": "^8.49.0",
@@ -213,8 +212,13 @@
     },
     "win": {
       "target": [
-        "squirrel"
+        "nsis"
       ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "differentialPackage": true
     },
     "linux": {
       "target": [
