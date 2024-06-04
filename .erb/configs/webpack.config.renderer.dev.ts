@@ -41,12 +41,27 @@ const configuration: webpack.Configuration = {
     main: [
       `webpack-dev-server/client?http://localhost:${port}/dist`,
       'webpack/hot/only-dev-server',
-      path.join(webpackPaths.srcRendererPath, 'index.tsx'),
+      path.join(webpackPaths.srcRendererPath, 'pages', 'app', 'index.tsx'),
+    ],
+    updater: [
+      `webpack-dev-server/client?http://localhost:${port}/dist`,
+      'webpack/hot/only-dev-server',
+      path.join(
+        webpackPaths.srcRendererPath,
+        'pages',
+        'updater',
+        'updater.tsx',
+      ),
     ],
     testwindow: [
       `webpack-dev-server/client?http://localhost:${port}/dist`,
       'webpack/hot/only-dev-server',
-      path.join(webpackPaths.srcRendererPath, 'testwindow.tsx'),
+      path.join(
+        webpackPaths.srcRendererPath,
+        'pages',
+        'testwindow',
+        'testwindow.tsx',
+      ),
     ],
   },
   output: {
@@ -131,7 +146,12 @@ const configuration: webpack.Configuration = {
     new ReactRefreshWebpackPlugin(),
     new HtmlWebpackPlugin({
       filename: 'index.html',
-      template: path.join(webpackPaths.srcRendererPath, 'index.ejs'),
+      template: path.join(
+        webpackPaths.srcRendererPath,
+        'pages',
+        'app',
+        'index.ejs',
+      ),
       chunks: ['main'],
       minify: {
         collapseWhitespace: true,
@@ -144,8 +164,32 @@ const configuration: webpack.Configuration = {
       nodeModules: webpackPaths.appNodeModulesPath,
     }),
     new HtmlWebpackPlugin({
+      filename: 'updater.html',
+      template: path.join(
+        webpackPaths.srcRendererPath,
+        'pages',
+        'updater',
+        'updater.html',
+      ),
+      chunks: ['updater'],
+      minify: {
+        collapseWhitespace: true,
+        removeAttributeQuotes: true,
+        removeComments: true,
+      },
+      isBrowser: false,
+      env: process.env.NODE_ENV,
+      isDevelopment: process.env.NODE_ENV !== 'production',
+      nodeModules: webpackPaths.appNodeModulesPath,
+    }),
+    new HtmlWebpackPlugin({
       filename: 'testwindow.html',
-      template: path.join(webpackPaths.srcRendererPath, 'testwindow.html'),
+      template: path.join(
+        webpackPaths.srcRendererPath,
+        'pages',
+        'testwindow',
+        'testwindow.html',
+      ),
       chunks: ['testwindow'],
       minify: {
         collapseWhitespace: true,

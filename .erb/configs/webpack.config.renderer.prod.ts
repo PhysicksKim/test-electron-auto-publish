@@ -19,8 +19,19 @@ const configuration: webpack.Configuration = {
   mode: 'production',
   target: ['web', 'electron-renderer'],
   entry: {
-    main: path.join(webpackPaths.srcRendererPath, 'index.tsx'),
-    testwindow: path.join(webpackPaths.srcRendererPath, 'testwindow.tsx'),
+    main: path.join(webpackPaths.srcRendererPath, 'pages', 'app', 'index.tsx'),
+    updater: path.join(
+      webpackPaths.srcRendererPath,
+      'pages',
+      'updater',
+      'updater.tsx',
+    ),
+    testwindow: path.join(
+      webpackPaths.srcRendererPath,
+      'pages',
+      'testwindow',
+      'testwindow.tsx',
+    ),
   },
   output: {
     path: webpackPaths.distRendererPath,
@@ -87,7 +98,12 @@ const configuration: webpack.Configuration = {
     }),
     new HtmlWebpackPlugin({
       filename: 'index.html',
-      template: path.join(webpackPaths.srcRendererPath, 'index.ejs'),
+      template: path.join(
+        webpackPaths.srcRendererPath,
+        'pages',
+        'app',
+        'index.ejs',
+      ),
       chunks: ['main'],
       minify: {
         collapseWhitespace: true,
@@ -99,8 +115,31 @@ const configuration: webpack.Configuration = {
       nodeModules: false,
     }),
     new HtmlWebpackPlugin({
+      filename: 'updater.html',
+      template: path.join(
+        webpackPaths.srcRendererPath,
+        'pages',
+        'updater',
+        'updater.html',
+      ),
+      chunks: ['updater'],
+      minify: {
+        collapseWhitespace: true,
+        removeAttributeQuotes: true,
+        removeComments: true,
+      },
+      isBrowser: false,
+      env: process.env.NODE_ENV,
+      nodeModules: false,
+    }),
+    new HtmlWebpackPlugin({
       filename: 'testwindow.html',
-      template: path.join(webpackPaths.srcRendererPath, 'testwindow.html'),
+      template: path.join(
+        webpackPaths.srcRendererPath,
+        'pages',
+        'testwindow',
+        'testwindow.html',
+      ),
       chunks: ['testwindow'],
       minify: {
         collapseWhitespace: true,

@@ -6,26 +6,47 @@ import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 
+let updaterWindow: BrowserWindow | null = null;
+
 class AppUpdater {
   constructor() {
     log.transports.file.level = 'info';
     autoUpdater.logger = log;
-    autoUpdater.checkForUpdatesAndNotify();
 
     autoUpdater.on('checking-for-update', () => {
       log.info('Checking for update...');
+      if (updaterWindow) {
+        updaterWindow.webContents.send('message', 'Checking for update...');
+      }
     });
 
     autoUpdater.on('update-available', (info) => {
       log.info('Update available.');
+      if (updaterWindow) {
+        updaterWindow.webContents.send(
+          'message',
+          'Update available. Downloading...',
+        );
+      }
     });
 
     autoUpdater.on('update-not-available', (info) => {
       log.info('Update not available.');
+      if (updaterWindow) {
+        updaterWindow.webContents.send(
+          'message',
+          'Update not available. Starting app...',
+        );
+        createMainWindow();
+        updaterWindow.close();
+      }
     });
 
     autoUpdater.on('error', (err) => {
       log.error('Error in auto-updater. ' + err);
+      if (updaterWindow) {
+        updaterWindow.webContents.send('message', 'Error: ' + err);
+      }
     });
 
     autoUpdater.on('download-progress', (progressObj) => {
@@ -39,12 +60,23 @@ class AppUpdater {
         progressObj.total +
         ')';
       log.info(logMessage);
+      if (updaterWindow) {
+        updaterWindow.webContents.send('message', logMessage);
+      }
     });
 
     autoUpdater.on('update-downloaded', (info) => {
       log.info('Update downloaded');
-      autoUpdater.quitAndInstall(true); // isSilent = true :: 업데이트 중에 사용자에게 알림을 표시하지 않음
+      if (updaterWindow) {
+        updaterWindow.webContents.send(
+          'message',
+          'Update downloaded. Restarting app...',
+        );
+      }
+      autoUpdater.quitAndInstall(true, true); // isSilent = true, isForceRunAfter = true
     });
+
+    autoUpdater.checkForUpdatesAndNotify();
   }
 }
 
@@ -54,6 +86,24 @@ ipcMain.on('ipc-example', async (event, arg) => {
   const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
   console.log(msgTemplate(arg));
   event.reply('ipc-example', msgTemplate('pong'));
+});
+
+const createTestWindow = async () => {
+  const testWindow = new BrowserWindow({
+    width: 400,
+    height: 300,
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.js'),
+      contextIsolation: true,
+      nodeIntegration: false,
+    },
+  });
+
+  testWindow.loadURL(resolveHtmlPath('testwindow.html'));
+};
+
+ipcMain.on('open-test-window', () => {
+  createTestWindow();
 });
 
 if (process.env.NODE_ENV === 'production') {
@@ -81,7 +131,7 @@ const installExtensions = async () => {
     .catch(console.log);
 };
 
-const createWindow = async () => {
+const createMainWindow = async () => {
   if (isDebug) {
     await installExtensions();
   }
@@ -133,7 +183,7 @@ const createWindow = async () => {
   });
 
   // Remove this if your app does not use auto updates
-  new AppUpdater();
+  // new AppUpdater();
 };
 
 app.on('window-all-closed', () => {
@@ -145,10 +195,6 @@ app.on('window-all-closed', () => {
 app
   .whenReady()
   .then(() => {
-    createWindow();
-
-    app.on('activate', () => {
-      if (mainWindow === null) createWindow();
-    });
+    createMainWindow();
   })
   .catch(console.log);

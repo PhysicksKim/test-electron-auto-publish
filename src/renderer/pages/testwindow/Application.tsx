@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const AppTestWindow = () => {
+const Application = () => {
   const [count, setCount] = useState(0);
 
   return (
@@ -14,4 +14,4 @@ const AppTestWindow = () => {
   );
 };
 
-export default AppTestWindow;
+export default Application;
