@@ -19,14 +19,18 @@ jobs:
           node-version: 18
           cache: npm
 
-      - name: Install and build
+      - name: Install dependencies
         run: |
           npm install
+          npm install electron-builder-squirrel-windows
           npm run postinstall
+
+      - name: Build project
+        run: |
           npm run build
 
       - name: Publish releases
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          npm exec electron-builder -- --publish always --win --x64 --ia32 --config.extraMetadata.main=build/main.js
+          npm exec electron-builder -- --publish always --win
