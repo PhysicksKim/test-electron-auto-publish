@@ -13,10 +13,7 @@ function Hello() {
         <img width="200" alt="icon" src={icon} />
       </div>
       <h1>electron-react-boilerplate</h1>
-      <h3>
-        DeltaUpdate Auto Update test Version v0.0.6 (isSlient == true)
-        !!!🎇🎇✨✨💎💍
-      </h3>
+      <h3>Version v0.0.7 ???? is delta update and slient update working?</h3>
       <div className="Hello">
         <a
           href="https://electron-react-boilerplate.js.org/"
