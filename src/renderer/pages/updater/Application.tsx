@@ -4,16 +4,6 @@ import { ipcRenderer } from 'electron';
 const Application = () => {
   const [message, setMessage] = useState('Checking for updates...');
 
-  useEffect(() => {
-    ipcRenderer.on('message', (event, text) => {
-      setMessage(text);
-    });
-
-    return () => {
-      ipcRenderer.removeAllListeners('message');
-    };
-  }, []);
-
   return (
     <div>
       <h1>Update Check</h1>

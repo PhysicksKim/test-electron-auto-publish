@@ -1,4 +1,3 @@
-/* eslint global-require: off, no-console: off, promise/always-return: off */
 import path from 'path';
 import { app, BrowserWindow, shell, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
@@ -7,51 +6,52 @@ import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 
 let updaterWindow: BrowserWindow | null = null;
+let mainWindow: BrowserWindow | null = null;
 
 class AppUpdater {
   constructor() {
+    console.log('AppUpdater constructor');
     log.transports.file.level = 'info';
     autoUpdater.logger = log;
 
     autoUpdater.on('checking-for-update', () => {
       log.info('Checking for update...');
-      if (updaterWindow) {
-        updaterWindow.webContents.send('message', 'Checking for update...');
+      console.log('Checking for update...');
+      if (mainWindow) {
+        mainWindow.webContents.send('message', '업데이트 확인 중...');
+        mainWindow.webContents.send('isUpdating', true);
       }
     });
 
     autoUpdater.on('update-available', (info) => {
       log.info('Update available.');
-      if (updaterWindow) {
-        updaterWindow.webContents.send(
-          'message',
-          'Update available. Downloading...',
-        );
+      if (mainWindow) {
+        mainWindow.webContents.send('message', '업데이트 가능. 다운로드 중...');
       }
     });
 
     autoUpdater.on('update-not-available', (info) => {
       log.info('Update not available.');
-      if (updaterWindow) {
-        updaterWindow.webContents.send(
+      if (mainWindow) {
+        mainWindow.webContents.send(
           'message',
-          'Update not available. Starting app...',
+          '업데이트가 없습니다. 앱을 시작합니다...',
         );
-        createMainWindow();
-        updaterWindow.close();
+        mainWindow.webContents.send('isUpdating', false);
       }
     });
 
     autoUpdater.on('error', (err) => {
       log.error('Error in auto-updater. ' + err);
-      if (updaterWindow) {
-        updaterWindow.webContents.send('message', 'Error: ' + err);
+      if (mainWindow) {
+        mainWindow.webContents.send('message', '오류: ' + err);
+        mainWindow.webContents.send('isUpdating', false);
       }
     });
 
     autoUpdater.on('download-progress', (progressObj) => {
-      let logMessage = 'Download speed: ' + progressObj.bytesPerSecond;
-      logMessage = logMessage + ' - Downloaded ' + progressObj.percent + '%';
+      let logMessage = '다운로드 속도: ' + progressObj.bytesPerSecond;
+      logMessage = logMessage + ' - 다운로드 ' + progressObj.percent + '% 완료';
       logMessage =
         logMessage +
         ' (' +
@@ -60,17 +60,17 @@ class AppUpdater {
         progressObj.total +
         ')';
       log.info(logMessage);
-      if (updaterWindow) {
-        updaterWindow.webContents.send('message', logMessage);
+      if (mainWindow) {
+        mainWindow.webContents.send('message', `로그:${logMessage}`);
       }
     });
 
     autoUpdater.on('update-downloaded', (info) => {
       log.info('Update downloaded');
-      if (updaterWindow) {
-        updaterWindow.webContents.send(
+      if (mainWindow) {
+        mainWindow.webContents.send(
           'message',
-          'Update downloaded. Restarting app...',
+          '업데이트 다운로드 완료. 앱을 재시작합니다...',
         );
       }
       autoUpdater.quitAndInstall(true, true); // isSilent = true, isForceRunAfter = true
@@ -80,7 +80,11 @@ class AppUpdater {
   }
 }
 
-let mainWindow: BrowserWindow | null = null;
+ipcMain.on('react-ready', (event, arg) => {
+  console.log(arg); // "react is ready" message
+  new AppUpdater();
+  mainWindow?.webContents.send('message', '앱 업데이터 동작');
+});
 
 ipcMain.on('ipc-example', async (event, arg) => {
   const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
@@ -181,9 +185,6 @@ const createMainWindow = async () => {
     shell.openExternal(edata.url);
     return { action: 'deny' };
   });
-
-  // Remove this if your app does not use auto updates
-  // new AppUpdater();
 };
 
 app.on('window-all-closed', () => {
