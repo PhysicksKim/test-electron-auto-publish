@@ -3,6 +3,11 @@ body {
   margin: 0;
   padding: 0;
   overflow: hidden;
+  box-sizing: border-box;
+  border: 1px beige solid;
+  -webkit-app-region: drag; /* 드래그 가능한 영역 설정 */
+  height: 100vh;
+  width: 100vw;
 }
 
 .drag-area {
