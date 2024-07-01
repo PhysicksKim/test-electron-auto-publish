@@ -96,6 +96,8 @@ const createTestWindow = async () => {
   const testWindow = new BrowserWindow({
     width: 400,
     height: 300,
+    transparent: true,
+    frame: false, // 프레임(타이틀바) 제거
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,

@@ -1,0 +1,18 @@
+body {
+  background: rgba(0, 0, 0, 0); /* 투명 배경 설정 */
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.drag-area {
+  -webkit-app-region: drag; /* 드래그 가능한 영역 설정 */
+  width: 100%;
+  height: 30px; /* 필요한 만큼 높이를 설정 */
+  background: rgba(255, 255, 255, 0.1); /* 예시를 위해 약간의 배경색 추가 */
+}
+
+.content {
+  background: rgba(245, 245, 220, 0.473);
+  padding: 10px;
+}
